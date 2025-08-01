@@ -1,5 +1,6 @@
 ﻿import Link from "next/link";
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid'
+import {ArrowLeftIcon} from "lucide-react";
 
 export default function ProjectsPage() {
     const projects = Array(2).fill(null).map((_, idx) => ({
@@ -11,7 +12,9 @@ export default function ProjectsPage() {
 
     return (
         <div>
-            <h1 className="text-2xl font-bold mb-4">Projects</h1>
+            <header className="bg-orange-500 text-white p-4 shadow-md flex items-center gap-4">
+                <h1 className="text-xl font-bold">Projects</h1>
+            </header>
 
             {/* Search bar */}
             <div className="my-4 relative">
