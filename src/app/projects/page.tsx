@@ -1,6 +1,5 @@
 ﻿import Link from "next/link";
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid'
-import {ArrowLeftIcon} from "lucide-react";
 
 export default function ProjectsPage() {
     const projects = Array(2).fill(null).map((_, idx) => ({
