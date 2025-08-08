@@ -16,7 +16,7 @@ jest.mock('../src/app/context/projectContext', () => ({
     }),
 }));
 
-describe('ProjectsPage Component', () => {
+describe('ProjectsPage - Visual component', () => {
     it('renders the main heading with the text "Projects"', () => {
         render(<ProjectsPage />);
         expect(screen.getByText('Projects')).toBeInTheDocument();
@@ -44,7 +44,6 @@ describe('ProjectsPage Component', () => {
         await userEvent.type(input, 'Test');
         expect(input).toHaveValue('Test');
     });
-
 
     it('the floating action button links to "/projects/form"', async () => {
         render(<ProjectsPage />);

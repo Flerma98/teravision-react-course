@@ -3,10 +3,10 @@ import { createProject } from '../action'
 import { useRouter } from 'next/navigation';
 import { ArrowLeftIcon } from "lucide-react";
 import { useState, useEffect } from 'react';
-import { useProject } from '../../../context/projectContext';
+import { useProject } from '@/app/context/projectContext';
 
 export default function ProjectForm() {
-    const router = useRouter()
+    const router = useRouter();
     const { editingProject } = useProject();
 
     const [title, setTitle] = useState('');
