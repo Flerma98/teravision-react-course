@@ -2,6 +2,20 @@
 import ProjectsPage from '/src/app/projects/page';
 import userEvent from '@testing-library/user-event';
 
+const mockPush = jest.fn();
+
+jest.mock('next/navigation', () => ({
+    useRouter: () => ({
+        push: mockPush
+    }),
+}));
+
+jest.mock('../src/app/context/projectContext', () => ({
+    useProject: () => ({
+        setEditingProject: mockPush
+    }),
+}));
+
 describe('ProjectsPage Component', () => {
     it('renders the main heading with the text "Projects"', () => {
         render(<ProjectsPage />);
@@ -15,7 +29,7 @@ describe('ProjectsPage Component', () => {
 
     it('displays exactly two project titles with the text "Title"', () => {
         render(<ProjectsPage />);
-        const titles = screen.getAllByText('Title');
+        const titles = screen.getAllByText(/^Title \d$/);
         expect(titles).toHaveLength(2);
     });
 
@@ -31,10 +45,12 @@ describe('ProjectsPage Component', () => {
         expect(input).toHaveValue('Test');
     });
 
-    it('the floating action button links to "/projects/form"', () => {
+
+    it('the floating action button links to "/projects/form"', async () => {
         render(<ProjectsPage />);
-        const buttonLink = screen.getByRole('link', { name: '+' });
-        expect(buttonLink).toHaveAttribute('href', '/projects/form');
+        const button = screen.getByRole('button', { name: '+' });
+        await userEvent.click(button);
+        expect(mockPush).toHaveBeenCalledWith('projects/form');
     });
 
     it('renders the project descriptions containing placeholder text', () => {
