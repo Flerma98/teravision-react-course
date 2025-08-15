@@ -1,5 +1,5 @@
 ﻿"use client"
-import { createProject } from '../action'
+import {editProject} from '../action'
 import { useRouter } from 'next/navigation';
 import { ArrowLeftIcon } from "lucide-react";
 import { useState, useEffect } from 'react';
@@ -15,7 +15,7 @@ export default function ProjectForm() {
     useEffect(() => {
         console.log(editingProject)
         if (editingProject) {
-            setTitle(editingProject.title);
+            setTitle(editingProject.name);
             setDescription(editingProject.description);
         } else {
             setTitle('');
@@ -40,7 +40,7 @@ export default function ProjectForm() {
             {/* Content */}
             <main className="flex-grow flex justify-center items-start pt-10 px-4">
                 <form
-                    action={createProject}
+                    action={editProject}
                     className="w-full max-w-xl bg-white p-6 rounded-lg shadow-md space-y-6"
                 >
                     <div>
@@ -72,6 +72,7 @@ export default function ProjectForm() {
                         ></textarea>
                     </div>
 
+                    <input type="hidden" name="id" value={editingProject?.id} />
                     <div className="flex justify-center">
                         <button
                             type="submit"

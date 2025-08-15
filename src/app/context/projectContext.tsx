@@ -1,21 +1,23 @@
 'use client';
 import React, { createContext, useContext, useState } from 'react';
 
-type Project = {
-  id: number;
-  title: string;
-  description: string;
+export type ProjectModel = {
+    id: number;
+    name: string;
+    description: string;
+    createdAt: string;
+    updatedAt?: string | null;
 };
 
 type ProjectContextType = {
-  editingProject: Project | null;
-  setEditingProject: (project: Project | null) => void;
+  editingProject: ProjectModel | null;
+  setEditingProject: (project: ProjectModel | null) => void;
 };
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
 export const ProjectProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [editingProject, setEditingProject] = useState<ProjectModel | null>(null);
 
   return (
     <ProjectContext.Provider value={{ editingProject, setEditingProject }}>

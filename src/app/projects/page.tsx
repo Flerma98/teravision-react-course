@@ -1,32 +1,56 @@
 ﻿'use client';
-import { useState } from "react";
-import { MagnifyingGlassIcon } from '@heroicons/react/24/solid'
-import { useRouter } from 'next/navigation';
-import { useProject } from '../context/projectContext';
+import {useState, useEffect} from "react";
+import {MagnifyingGlassIcon} from '@heroicons/react/24/solid'
+import {redirect, useRouter} from 'next/navigation';
+import {useProject, ProjectModel} from '../context/projectContext';
 
 export default function ProjectsPage() {
     const router = useRouter();
-    const { setEditingProject } = useProject();
+    const {setEditingProject} = useProject();
 
-    type Project = {
-        id: number;
-        title: string;
-        description: string;
-    };
+    const [projects, setProjects] = useState<ProjectModel[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const [projects, setProjects] = useState(Array(2).fill(null).map((_, idx) => ({
-        id: idx,
-        title: `Title ${idx}`,
-        description:
-            'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s...'
-    })));
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                const res = await fetch("https://localhost:7000/api/project", {
+                    method: "GET",
+                    headers: {"accept": "application/json"}
+                });
+                if (!res.ok) throw new Error("Error al obtener proyectos");
+                const data: ProjectModel[] = await res.json();
+                setProjects(data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const deleteProject = (id: number) => {
+        fetchProjects();
+    }, []);
+
+    const deleteProject = async (id: number) => {
+        const res = await fetch(`https://localhost:7000/api/project/${id}/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+        });
+
+        if (!res.ok) {
+            // Manejo de errores
+            const errorText = await res.text();
+            throw new Error(`Error deleting project: ${errorText}`);
+        }
+
+        // Redirige a la lista de proyectos si todo salió bien
         setProjects(prev => prev.filter(project => project.id !== id));
-        // Deletes in database here
     };
 
-    const editProject = (project: Project) => {
+    const editProject = (project: ProjectModel) => {
         setEditingProject(project);
         router.push(`projects/form/${project.id}`);
     };
@@ -44,7 +68,8 @@ export default function ProjectsPage() {
 
             {/* Search bar */}
             <div className="my-4 relative">
-                <MagnifyingGlassIcon className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <MagnifyingGlassIcon
+                    className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"/>
                 <input
                     type="text"
                     placeholder="Search"
@@ -52,16 +77,19 @@ export default function ProjectsPage() {
                 />
             </div>
 
+            {/* Loading */}
+            {loading && <p className="text-gray-500">Loading projects...</p>}
+
             {/* Project list */}
             <div className="space-y-4">
                 {projects.map((project) => (
-                    <div key={project.id} className="bg-gray-200 rounded-2xl p-4 flex items-center">
+                    <div key={project.id} className="bg-gray-200 rounded-2xl p-4 flex items-center justify-between">
                         <div>
-                            <h2 className="font-bold text-lg">{project.title}</h2>
+                            <h2 className="font-bold text-lg">{project.name}</h2>
                             <p className="text-sm text-gray-700 mt-2">{project.description}</p>
                         </div>
 
-                        <div className="w-16 h-16 rounded flex items-center justify-center">
+                        <div className="flex gap-4">
                             <button onClick={() => editProject(project)}>
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -78,9 +106,7 @@ export default function ProjectsPage() {
                                     />
                                 </svg>
                             </button>
-                        </div>
 
-                        <div className="w-16 h-16 rounded flex items-center justify-center">
                             <button onClick={() => deleteProject(project.id)}>
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -98,14 +124,13 @@ export default function ProjectsPage() {
                                 </svg>
                             </button>
                         </div>
-
                     </div>
                 ))}
             </div>
 
             {/* Floating action button */}
             <button
-                onClick={() => addProject()}
+                onClick={addProject}
                 className="fixed bottom-6 right-6 bg-orange-500 rounded-full w-14 h-14 text-white text-3xl flex items-center justify-center shadow-lg">
                 +
             </button>
