@@ -1,7 +1,7 @@
 ﻿'use client';
 import {useState, useEffect} from "react";
 import {MagnifyingGlassIcon} from '@heroicons/react/24/solid'
-import {redirect, useRouter} from 'next/navigation';
+import {useRouter} from 'next/navigation';
 import {useProject, ProjectModel} from '../context/projectContext';
 
 export default function ProjectsPage() {
@@ -14,7 +14,7 @@ export default function ProjectsPage() {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const res = await fetch("https://localhost:7000/api/project", {
+                const res = await fetch("http://localhost:7000/api/project", {
                     method: "GET",
                     headers: {"accept": "application/json"}
                 });
@@ -32,7 +32,7 @@ export default function ProjectsPage() {
     }, []);
 
     const deleteProject = async (id: number) => {
-        const res = await fetch(`https://localhost:7000/api/project/${id}/`, {
+        const res = await fetch(`http://localhost:7000/api/project/${id}/`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
