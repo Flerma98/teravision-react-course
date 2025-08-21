@@ -3,6 +3,7 @@ import './globals.css';
 import { ReactNode } from 'react';
 import ClientDrawer from "@/components/client-drawer/component";
 import { ProjectProvider } from './context/projectContext';
+import { TaskProvider } from './context/taskContext';
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -14,9 +15,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <html lang="en">
             <body className="bg-gray-100 text-gray-900">
                 <ProjectProvider>
-                    <ClientDrawer>
-                        {children}
-                    </ClientDrawer>
+                    <TaskProvider>
+                        <ClientDrawer>
+                            {children}
+                        </ClientDrawer>
+                    </TaskProvider>
                 </ProjectProvider>
             </body>
         </html>
