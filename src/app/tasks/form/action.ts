@@ -16,7 +16,7 @@ export async function createTask(formData: FormData) {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
     // Llamada POST al API
-    const res = await fetch('http://localhost:7000/api/task', {
+    const res = await fetch('http://localhost:8080/api/task', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export async function editTask(formData: FormData) {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
     // Llamada POST al API
-    const res = await fetch(`http://localhost:7000/api/task/${id}/`, {
+    const res = await fetch(`http://localhost:8080/api/task/${id}/`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
