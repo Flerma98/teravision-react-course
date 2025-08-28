@@ -14,7 +14,7 @@ export default function TasksPage() {
     useEffect(() => {
         const fetchTasks = async () => {
             try {
-                const res = await fetch("http://localhost:7000/api/task", {
+                const res = await fetch("http://localhost:8080/api/task", {
                     method: "GET",
                     headers: {"accept": "application/json"}
                 });
@@ -32,7 +32,7 @@ export default function TasksPage() {
     }, []);
 
     const deleteTask = async (id: number) => {
-        const res = await fetch(`http://localhost:7000/api/task/${id}/`, {
+        const res = await fetch(`http://localhost:8080/api/task/${id}/`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
