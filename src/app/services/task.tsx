@@ -1,25 +1,38 @@
 ﻿import { TaskModel } from "@/app/context/taskContext";
 
+const base = "http://localhost:8080/api";
+
+export type PaginatedResult<T> = {
+  items: T[];
+  totalCount: number;
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+};
+
 type ListParams = {
-  limit?: number;
-  offset?: number;
-  q?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  showAll?: boolean;
 };
 
 /**
- * Fetch task list with optional pagination params.
- * - Keeps backward compatibility: when no params, calls the plain endpoint (your tests expect this).
+ * Fetch tasks using server-side pagination.
+ * URL shape: /api/task?showAll=false&pageNumber=1&pageSize=10
  */
-export async function fetchTasks(params?: ListParams): Promise<TaskModel[]> {
-  const base = "http://localhost:8080/api";
+export async function fetchTasks(
+  params?: ListParams
+): Promise<PaginatedResult<TaskModel>> {
   const url = new URL(`${base}/task`);
-  if (params?.limit != null) url.searchParams.set("limit", String(params.limit));
-  if (params?.offset != null) url.searchParams.set("offset", String(params.offset));
-  if (params?.q) url.searchParams.set("q", params.q);
+  // Defaults that match the backend contract
+  url.searchParams.set("showAll", String(params?.showAll ?? false));
+  url.searchParams.set("pageNumber", String(params?.pageNumber ?? 1));
+  url.searchParams.set("pageSize", String(params?.pageSize ?? 10));
 
-  const response = await fetch(url.toString());
+  const response = await fetch(url.toString(), { headers: { accept: "application/json" } });
   if (!response.ok) {
     throw new Error(`Failed to fetch tasks: ${response.status}`);
   }
+  // Backend returns the full paginated envelope
   return response.json();
 }

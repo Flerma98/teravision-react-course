@@ -1,25 +1,38 @@
 ﻿import { ProjectModel } from "@/app/context/projectContext";
-type ListParams = {
-  limit?: number;
-  offset?: number;
-  q?: string;
+
+const base = "http://localhost:8080/api";
+
+export type PaginatedResult<T> = {
+  items: T[];
+  totalCount: number;
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
 };
 
+type ListParams = {
+  pageNumber?: number;
+  pageSize?: number;
+  showAll?: boolean;
+};
 
 /**
- * Fetch project list with optional pagination params.
- * - Keeps backward compatibility: when no params, calls the plain endpoint (your tests expect this).
+ * Fetch projects using server-side pagination.
+ * URL shape: /api/project?showAll=false&pageNumber=1&pageSize=10
  */
-export async function fetchProjects(params?: ListParams): Promise<ProjectModel[]> {
-  const base = "http://localhost:8080/api";
+export async function fetchProjects(
+  params?: ListParams
+): Promise<PaginatedResult<ProjectModel>> {
   const url = new URL(`${base}/project`);
-  if (params?.limit != null) url.searchParams.set("limit", String(params.limit));
-  if (params?.offset != null) url.searchParams.set("offset", String(params.offset));
-  if (params?.q) url.searchParams.set("q", params.q);
+  // Defaults that match the backend contract
+  url.searchParams.set("showAll", String(params?.showAll ?? false));
+  url.searchParams.set("pageNumber", String(params?.pageNumber ?? 1));
+  url.searchParams.set("pageSize", String(params?.pageSize ?? 10));
 
-  const response = await fetch(url.toString());
+  const response = await fetch(url.toString(), { headers: { accept: "application/json" } });
   if (!response.ok) {
     throw new Error(`Failed to fetch projects: ${response.status}`);
   }
+  // Backend returns the full paginated envelope
   return response.json();
 }
