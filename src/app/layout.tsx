@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import ClientDrawer from "@/components/client-drawer/component";
 import { ProjectProvider } from './context/projectContext';
 import { TaskProvider } from './context/taskContext';
+import {EventProvider} from "@/app/context/eventContext";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -16,9 +17,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <body className="bg-gray-100 text-gray-900">
                 <ProjectProvider>
                     <TaskProvider>
-                        <ClientDrawer>
-                            {children}
-                        </ClientDrawer>
+                        <EventProvider>
+                            <ClientDrawer>
+                                {children}
+                            </ClientDrawer>
+                        </EventProvider>
                     </TaskProvider>
                 </ProjectProvider>
             </body>
