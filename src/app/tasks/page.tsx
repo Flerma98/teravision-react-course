@@ -87,6 +87,7 @@ export default function TasksPage() {
                         <div>
                             <h2 className="font-bold text-lg">{task.name}</h2>
                             <p className="text-sm text-gray-700 mt-2">{task.description}</p>
+                            <p className="text-sm text-gray-700 mt-3">Proyecto: {task.projectId}</p>
                         </div>
 
                         <div className="flex gap-4">

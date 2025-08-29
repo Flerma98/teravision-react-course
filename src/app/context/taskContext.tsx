@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState } from 'react';
 
 export type TaskModel = {
     id: number;
+    projectId: number;
     name: string;
     description: string;
     createdAt: string;

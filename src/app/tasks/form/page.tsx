@@ -1,10 +1,30 @@
 ﻿"use client"
 import { createTask } from './action'
 import { useRouter } from 'next/navigation';
-import {ArrowLeftIcon} from "lucide-react";
+import { ArrowLeftIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+
+export type ProjectModel = {
+    id: number;
+    name: string;
+    description: string;
+    createdAt: string;
+    updatedAt?: string | null;
+};
 
 export default function TaskForm() {
     const router = useRouter()
+    const [projects, setProjects] = useState<ProjectModel[]>([]);
+
+    // Cargar proyectos desde la API
+    useEffect(() => {
+        fetch("http://localhost:8080/api/project", {
+            headers: { "Accept": "application/json" }
+        })
+            .then(res => res.json())
+            .then((data: ProjectModel[]) => setProjects(data))
+            .catch(err => console.error("Error cargando proyectos:", err));
+    }, []);
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-50">
@@ -26,6 +46,7 @@ export default function TaskForm() {
                     action={createTask}
                     className="w-full max-w-xl bg-white p-6 rounded-lg shadow-md space-y-6"
                 >
+                    {/* Nombre */}
                     <div>
                         <label className="block text-sm font-medium" htmlFor="name">
                             Name <span className="text-red-500">*</span>
@@ -39,6 +60,7 @@ export default function TaskForm() {
                         />
                     </div>
 
+                    {/* Descripción */}
                     <div>
                         <label className="block text-sm font-medium" htmlFor="description">
                             Description
@@ -51,6 +73,27 @@ export default function TaskForm() {
                         ></textarea>
                     </div>
 
+                    {/* Select de Proyectos */}
+                    <div>
+                        <label className="block text-sm font-medium" htmlFor="projectId">
+                            Project <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                            id="projectId"
+                            name="projectId"
+                            required
+                            className="mt-1 block w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
+                        >
+                            <option value="">-- Select a project --</option>
+                            {projects.map((p) => (
+                                <option key={p.id} value={p.id}>
+                                    {p.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Botón */}
                     <div className="flex justify-center">
                         <button
                             type="submit"

@@ -4,6 +4,7 @@ import {fetchTasks} from "@/app/services/task";
 describe("TaskModel", () => {
     const validTask: TaskModel = {
         id: 1,
+        projectId: 1,
         name: "First Task",
         description: "This is the first task",
         createdAt: new Date().toISOString(),
@@ -12,6 +13,7 @@ describe("TaskModel", () => {
 
     test("should have required fields", () => {
         expect(validTask).toHaveProperty("id");
+        expect(validTask).toHaveProperty("projectId");
         expect(validTask).toHaveProperty("name");
         expect(validTask).toHaveProperty("description");
         expect(validTask).toHaveProperty("createdAt");
@@ -20,6 +22,7 @@ describe("TaskModel", () => {
     test("should allow optional updatedAt", () => {
         const taskWithoutUpdatedAt: TaskModel = {
             id: 2,
+            projectId: 2,
             name: "Task without update",
             description: "Still valid",
             createdAt: new Date().toISOString(),
@@ -50,6 +53,7 @@ describe("fetchTasks", () => {
         const mockTasks: TaskModel[] = [
             {
                 id: 1,
+                projectId: 1,
                 name: "First Task",
                 description: "This is the first task",
                 createdAt: new Date().toISOString(),
