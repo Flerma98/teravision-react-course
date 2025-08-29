@@ -1,31 +1,28 @@
 import { fetchTasks } from '@/app/services/task';
 import type { TaskModel } from '@/app/context/taskContext';
 
-const base = 'http://localhost:8080/api';
-
-describe('fetchTasks pagination params', () => {
-  const mockTasks: TaskModel[] = [
-    { id: 10, projectId: 1, name: 'T1', description: '', createdAt: new Date().toISOString(), updatedAt: null },
-  ];
-
+describe('fetchTasks pagination params (server envelope)', () => {
   beforeEach(() => {
-    // Mock global fetch
-    (global.fetch as unknown as jest.Mock) = jest.fn().mockResolvedValue({
-      ok: true,
-      json: async () => mockTasks,
-    });
+    (global.fetch as unknown as jest.Mock) = jest.fn();
   });
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
+  it('uses correct defaults', async () => {
+    const envelope = { items: [], totalCount: 0, currentPage: 1, pageSize: 10, totalPages: 1 };
+    (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => envelope });
 
-  it('appends limit and offset to the request URL', async () => {
-    const result = await fetchTasks({ limit: 10, offset: 0 });
-    expect(result).toEqual(mockTasks);
+    const result = await fetchTasks();
+    expect(result).toEqual(envelope);
 
-    expect(global.fetch).toHaveBeenCalledTimes(1);
     const calledUrl = (global.fetch as jest.Mock).mock.calls[0][0] as string;
-    expect(calledUrl).toBe(`${base}/task?limit=10&offset=0`);
+    expect(calledUrl).toBe("http://localhost:8080/api/task?showAll=false&pageNumber=1&pageSize=10");
+  });
+
+  it('appends given pageNumber and pageSize', async () => {
+    const envelope = { items: [] as TaskModel[], totalCount: 0, currentPage: 3, pageSize: 50, totalPages: 1 };
+    (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: async () => envelope });
+
+    await fetchTasks({ pageNumber: 3, pageSize: 50, showAll: false });
+    const calledUrl = (global.fetch as jest.Mock).mock.calls[0][0] as string;
+    expect(calledUrl).toBe("http://localhost:8080/api/task?showAll=false&pageNumber=3&pageSize=50");
   });
 });
