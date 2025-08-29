@@ -1,9 +1,25 @@
 ﻿import { TaskModel } from "@/app/context/taskContext";
 
-export async function fetchTasks(): Promise<TaskModel[]> {
-    const response = await fetch("http://localhost:8080/api/task");
-    if (!response.ok) {
-        throw new Error(`Failed to fetch tasks: ${response.status}`);
-    }
-    return response.json();
+type ListParams = {
+  limit?: number;
+  offset?: number;
+  q?: string;
+};
+
+/**
+ * Fetch task list with optional pagination params.
+ * - Keeps backward compatibility: when no params, calls the plain endpoint (your tests expect this).
+ */
+export async function fetchTasks(params?: ListParams): Promise<TaskModel[]> {
+  const base = "http://localhost:8080/api";
+  const url = new URL(`${base}/task`);
+  if (params?.limit != null) url.searchParams.set("limit", String(params.limit));
+  if (params?.offset != null) url.searchParams.set("offset", String(params.offset));
+  if (params?.q) url.searchParams.set("q", params.q);
+
+  const response = await fetch(url.toString());
+  if (!response.ok) {
+    throw new Error(`Failed to fetch tasks: ${response.status}`);
+  }
+  return response.json();
 }
