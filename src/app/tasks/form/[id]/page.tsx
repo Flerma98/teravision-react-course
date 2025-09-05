@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeftIcon } from "lucide-react";
 import { useState, useEffect } from 'react';
 import { useTask } from '@/app/context/taskContext';
+import {PaginatedResult} from "@/app/services/project";
 
 export type ProjectModel = {
     id: number;
@@ -28,7 +29,7 @@ export default function TaskForm() {
             headers: { "Accept": "application/json" }
         })
             .then(res => res.json())
-            .then((data: ProjectModel[]) => setProjects(data))
+            .then((data:  PaginatedResult<ProjectModel>) => setProjects(data.items))
             .catch(err => console.error("Error cargando proyectos:", err));
     }, []);
 

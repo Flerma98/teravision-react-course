@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import './globals.css';
-import { ReactNode } from 'react';
-import ClientDrawer from "@/components/client-drawer/component";
-import { ProjectProvider } from './context/projectContext';
-import { TaskProvider } from './context/taskContext';
-import {EventProvider} from "@/app/context/eventContext";
+import "./globals.css";
+import { ReactNode } from "react";
+import ClientWrapper from "@/components/cleint-wrappers/client-wrapper";
+
+import { ProjectProvider } from "./context/projectContext";
+import { TaskProvider } from "./context/taskContext";
+import { EventProvider } from "@/app/context/eventContext";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -14,17 +15,15 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
     return (
         <html lang="en">
-            <body className="bg-gray-100 text-gray-900">
-                <ProjectProvider>
-                    <TaskProvider>
-                        <EventProvider>
-                            <ClientDrawer>
-                                {children}
-                            </ClientDrawer>
-                        </EventProvider>
-                    </TaskProvider>
-                </ProjectProvider>
-            </body>
+        <body className="bg-gray-100 text-gray-900">
+        <ProjectProvider>
+            <TaskProvider>
+                <EventProvider>
+                    <ClientWrapper>{children}</ClientWrapper>
+                </EventProvider>
+            </TaskProvider>
+        </ProjectProvider>
+        </body>
         </html>
     );
 }

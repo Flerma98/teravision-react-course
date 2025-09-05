@@ -24,10 +24,8 @@ export default function ClientDrawer({ children }: { children: React.ReactNode }
             >
                 <h2 className="text-lg font-bold mb-4">Menu</h2>
                 <ul className="space-y-2">
-                    <li><Link href="/users" onClick={() => setOpen(false)}>Users</Link></li>
                     <li><Link href="/projects" onClick={() => setOpen(false)}>Projects</Link></li>
                     <li><Link href="/tasks" onClick={() => setOpen(false)}>Tasks</Link></li>
-                    <li><Link href="/events" onClick={() => setOpen(false)}>Events</Link></li>
                 </ul>
             </div>
 

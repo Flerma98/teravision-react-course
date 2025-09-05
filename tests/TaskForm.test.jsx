@@ -15,10 +15,16 @@ jest.mock('/src/app/tasks/form/action', () => ({
 }));
 
 // --- Mock del fetch de proyectos ---
-const mockProjects = [
-    { id: 1, name: "Project A", description: "", createdAt: "2024-01-01" },
-    { id: 2, name: "Project B", description: "", createdAt: "2024-01-01" },
-];
+const mockProjects = {
+    items: [
+        { id: 1, name: "Title 1", description: "Lorem Ipsum 1", projectId: 1 },
+        { id: 2, name: "Title 2", description: "Lorem Ipsum 2", projectId: 1 },
+    ],
+    totalCount: 2,
+    currentPage: 1,
+    pageSize: 10,
+    totalPages: 1,
+};
 
 beforeAll(() => {
     global.fetch = jest.fn(() =>
